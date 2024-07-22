@@ -3,6 +3,9 @@
 
 def is_prime(number:int) -> bool:
 
+    #if None
+    if number is None:
+        return False
     #if less than 1
     if number <=1:
         return False

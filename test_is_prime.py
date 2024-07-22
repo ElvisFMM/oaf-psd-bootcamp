@@ -27,6 +27,11 @@ class Testing(unittest.TestCase):
         self.assertTrue(is_prime(3))
         self.assertTrue(is_prime(5))
         self.assertTrue(is_prime(7))
+    
+    #edge cases
+    def test_edge_cases(self):
+        self.assertFalse(is_prime(-1))
+        self.assertFalse(is_prime(None))
 
 
 
