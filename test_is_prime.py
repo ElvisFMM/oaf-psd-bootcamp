@@ -6,14 +6,6 @@ from is_prime import is_prime
 
 class Testing(unittest.TestCase):
     
-
-    #pass
-    def test_always_passes(self):
-        self.assertTrue(True)
-    #fail
-    def test_always_fails(self):
-        self.assertFalse(False)
-
     #Non-prime numbers (false)
     def test_non_prime_numbers(self):
         self.assertFalse(is_prime(4))
