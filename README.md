@@ -20,3 +20,22 @@ This is a summary of my project for the Pofessional Software Bootcamp through Op
 * [What I learned](#what-i-learned)
 * [Future directions](#future-directions)
 * [Project Organization](#project-organization)
+
+
+## Motivation
+
+I have always been intrigued by investing and the power of compound interest. I wanted to create this application to track the status of the S&P 500 index to get updates on its price.
+
+
+## Summary of approach
+
+### When is a good time to buy-in?
+
+For this project I wanted to have updates for when it is a good time to buy index funds. I decided to have a search feature for different stocks while also a visual for current S&P 500 price status.
+
+
+
+## Results
+
+
+
