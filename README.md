@@ -1,7 +1,7 @@
 # S&P 500 Tracker
 
 ![alt text](https://github.com/ElvisFMM/oaf-psd-bootcamp/blob/branch1/pictures/stocks.JPG)
-*Alot better to buy in when the board is red, think of it as a discount*
+*Better to buy in when the board is red - think of it as a discount*
 
 This is a summary of my project for the Pofessional Software Bootcamp through Open Avenues.  The project is still a work in progress - I'll be updating it more next month.
 
@@ -31,12 +31,16 @@ For this project I wanted to have updates for when it is a good time to buy inde
 
 *Tech Stack*
 
-* Backend - Python (flask library), Finnhub API
+* Backend - Python (flask library), Finnhub API (https://finnhub.io/docs/api/library)
 * Frontend - HTML, JavaScript
 * Database - Sqlite 
 
 
 ## Results
 
+The application presents a login screen which once successfully logged in you can use the stock search function to view live data for any stock on the market. This information is up to date. During further development I wish to track specific index stocks to notify once their is a certain drop in its price. This will then alow to have the best chance to buy stocks for a good price.
 
+## What I learned
+
+I've learned quite alot from the bootcamp such as proper ways to structure code to make it more modular and reusable. This is present when coding Objects with a goal of having inheritance or using depandency injection to facilitate changing certain paraments. I don't have much experience using API's and using them to query live stock information was awesome to see. 
 
