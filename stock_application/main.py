@@ -1,9 +1,9 @@
-
-from flask import Flask, jsonify, render_template, request
-import requests, sqlite3
-import finnhub
+from flask import Flask, jsonify, render_template, request, redirect, url_for
+import finnhub, requests, sqlite3
 from abc import ABC, abstractmethod #used for class structure
 from enum import Enum #used for environments
+from werkzeug.security import generate_password_hash, check_password_hash # used for login feature
+from class_structure import stockdata, finnhub_data, mock_data
 
 app = Flask(__name__)
 
@@ -29,49 +29,45 @@ cursor.execute('''
                 password_hash TEXT NOT NULL
             )
             ''')
+conn.commit()
+conn.close()
 
-'''If user does not exist add to the database'''
+    
 
+@app.route('/', methods=['GET', 'POST'])
+def login():
+    '''login function to read in inputs
+    and store new users into database'''
 
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
 
-class stockdata(ABC):
-    '''Base Class'''
-    @abstractmethod
-    def get_stock_data(self, symbol):
-        pass
+        conn = sqlite3.connect('login.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM login_info WHERE username=?', (username,))
+        user = cursor.fetchone()
 
-class finnhub_data(stockdata):
-    '''Inherits from Base Class, returns real data from API'''
-    def __init__(self, api_key):
-        self.api_key = api_key
-
-    def get_stock_data(self, symbol):
-        url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={finnhub_key}"
-        response = requests.get(url)
-
-        if response.status_code == 200:
-            data = response.json()
-            if data.get('c') is not None:
-                return data
+        if user:
+            '''check the password'''
+            if check_password_hash(user[2], password):
+                return redirect(url_for('index'))
             else:
-                print("No valid data returned for symbol: ", symbol)
-                return None
+                return "invalid password or username", 401
+            
         else:
-            print("Error: ", response.status_code, response.text)
+            '''create new user'''
+            password_hash = generate_password_hash(password)
+            cursor.execute('INSERT INTO login_info (username, password_hash) VALUES (?, ?)', (username, password_hash))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
+        
 
-class mock_data(stockdata):
-    '''Inherits from Base Class, returns mock data'''
+    return render_template('login.html')
+            
+        
 
-    def get_stock_data(self, symbol):
-        '''return data for demonstration'''
-        return {
-            "c": 100.0,
-            "h": 110.0,
-            "l": 90.0,
-            "o": 95.0,
-            "pc": 98.0
-        }
-      
 def stock_data_provider(env):
     '''factory funciton for environment'''
     if env == ENVIRONMENT.MOCK:
@@ -96,14 +92,14 @@ def stock_info():
     data = None
     if symbol:
         data = data_provider.get_stock_data(symbol) #needed to reference global variable
-    return render_template('home2.html', data=data, symbol=symbol)
+    return render_template('home.html', data=data, symbol=symbol)
 
-@app.route('/')
+@app.route('/afterlogin')
 def index():
     '''
     This is the base route to load the homepage
     '''
-    return render_template('home2.html')
+    return render_template('home.html')
 
 '''Global variable for environment'''
 data_provider = None
@@ -113,7 +109,7 @@ def main():
     while mock environment only returns static data'''
 
     global data_provider
-    ENV = ENVIRONMENT.PRODUCTION
+    ENV = ENVIRONMENT.PRODUCTION #change PRODUCTION TO MOCK if you want the mock environment
     #Initialize teh data provider based on environment
     data_provider = stock_data_provider(ENV)
 

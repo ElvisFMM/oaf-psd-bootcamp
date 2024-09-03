@@ -16,13 +16,39 @@
     {% if data %}
     <h2>Stock Data for {{ symbol | upper }}</h2>
     <ul>
-        <li>Symbol: {{ data['symbol'] }}</li>
-        <li>Price: {{ data['last']['price'] }}</li>
-        <li>Timestamp: {{ data['last']['timestamp'] }}</li>
-        <li>Exchange: {{ data['last']['exchange'] }}</li>
+        <li>Current Price: {{ data['c'] }}</li>
+        <li>High Price of the Day: {{ data['h'] }}</li>
+        <li>Low Price of the Day: {{ data['l'] }}</li>
+        <li>Open Price of the Day: {{ data['o'] }}</li>
+        <li>Previous Close Price: {{ data['pc'] }}</li>
     </ul>
     {% elif symbol %}
     <p>No data found for the symbol "{{ symbol }}". Please try again.</p>
     {% endif %}
+
+    <div id="company-profile"></div>
+
+    <script>
+        const symbol = "{{ symbol }}"; // Get the symbol from Flask
+
+        if (symbol) {
+            fetch(`/get_company_profile/${symbol}`)
+                .then(response => response.json())
+                .then(data => {
+                    const profileDiv = document.getElementById('company-profile');
+                    profileDiv.innerHTML = `
+                        <h2>Company Profile</h2>
+                        <p><strong>Name:</strong> ${data.name}</p>
+                        <p><strong>Country:</strong> ${data.country}</p>
+                        <p><strong>Industry:</strong> ${data.finnhubIndustry}</p>
+                        <p><strong>Web URL:</strong> <a href="${data.weburl}">${data.weburl}</a></p>
+                        <p><strong>Logo:</strong> <img src="${data.logo}" alt="Company Logo" style="width: 100px; height: auto;"></p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching company profile:', error);
+                });
+        }
+    </script>
 </body>
 </html>
