@@ -101,6 +101,23 @@ def index():
     '''
     return render_template('home.html')
 
+
+@app.route('/stock_data/<symbol>')
+def stock_data(symbol):
+    '''Returns stock data as JSON for use in the frontend chart'''
+    if not symbol:
+        return jsonify({"error": "Symbol is required"}), 400
+
+    data = data_provider.get_stock_data(symbol)
+    if not data:
+        return jsonify({"error": "No data available"}), 404
+
+    return jsonify(data)
+
+
+
+
+
 '''Global variable for environment'''
 data_provider = None
 
@@ -109,7 +126,7 @@ def main():
     while mock environment only returns static data'''
 
     global data_provider
-    ENV = ENVIRONMENT.PRODUCTION #change PRODUCTION TO MOCK if you want the mock environment
+    ENV = ENVIRONMENT.MOCK #change PRODUCTION TO MOCK if you want the mock environment
     #Initialize teh data provider based on environment
     data_provider = stock_data_provider(ENV)
 
