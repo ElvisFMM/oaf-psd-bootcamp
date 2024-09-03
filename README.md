@@ -36,7 +36,7 @@ For this project I wanted to have updates for when it is a good time to buy inde
 * Database - Sqlite 
 
 
-## Results
+## Results & Future Directions
 
 The application presents a login screen which once successfully logged in you can use the stock search function to view live data for any stock on the market. This information is up to date. During further development I wish to track specific index stocks to notify once their is a certain drop in its price. This will then alow to have the best chance to buy stocks for a good price.
 
