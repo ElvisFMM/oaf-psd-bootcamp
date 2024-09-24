@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Information</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Stock Information</h1>
+    <form method="GET" action="/stock">
+        <label for="symbol">Enter Stock Symbol:</label>
+        <input type="text" id="symbol" name="symbol" placeholder="AAPL" required>
+        <button type="submit">Get Stock Info</button>
+    </form>
+
+    {% if data %}
+    <h2>Stock Data for {{ symbol | upper }}</h2>
+    <ul>
+        <li>Current Price: {{ data['c'] }}</li>
+        <li>High Price of the Day: {{ data['h'] }}</li>
+        <li>Low Price of the Day: {{ data['l'] }}</li>
+        <li>Open Price of the Day: {{ data['o'] }}</li>
+        <li>Previous Close Price: {{ data['pc'] }}</li>
+    </ul>
+
+    <div id="company-profile"></div>
+
+    <script>
+        const symbol = "{{ symbol }}"; // Get the symbol from Flask
+
+        if (symbol) {
+            fetch(`/get_company_profile/${symbol}`)
+                .then(response => response.json())
+                .then(data => {
+                    const profileDiv = document.getElementById('company-profile');
+                    profileDiv.innerHTML = `
+                        <h2>Company Profile</h2>
+                        <p><strong>Name:</strong> ${data.name}</p>
+                        <p><strong>Country:</strong> ${data.country}</p>
+                        <p><strong>Industry:</strong> ${data.finnhubIndustry}</p>
+                        <p><strong>Web URL:</strong> <a href="${data.weburl}" target="_blank">${data.weburl}</a></p>
+                        <p><strong>Logo:</strong> <img src="${data.logo}" alt="Company Logo" style="width: 100px; height: auto;"></p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error fetching company profile:', error);
+                });
+        }
+    </script>
+
+    <div id="chart"></div>
+
+    <script>
+        if (symbol) {
+            fetch(`/stock_data/${symbol}`)
+                .then(response => response.json())
+                .then(data => {
+                    const trace = {
+                        x: ['Open', 'High', 'Low', 'Close', 'Previous Close'],
+                        y: [data.o, data.h, data.l, data.c, data.pc],
+                        type: 'bar'
+                    };
+
+                    const layout = {
+                        title: `Stock Data for ${symbol.toUpperCase()}`,
+                        xaxis: { title: 'Metric' },
+                        yaxis: { title: 'Price' }
+                    };
+
+                    Plotly.newPlot('chart', [trace], layout);
+                })
+                .catch(error => {
+                    console.error('Error fetching stock data:', error);
+                });
+        }
+    </script>
+    {% elif symbol %}
+    <p>No data found for the symbol "{{ symbol }}". Please try again.</p>
+    {% endif %}
+
+</body>
+</html>

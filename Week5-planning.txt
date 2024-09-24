@@ -1,0 +1,21 @@
+
+What is the goal?
+My project will be a job parser which will web scrape different websties
+for new job postings. I will have to fetch the HTML content using python libraries
+such as BeautifulSoup4, Requests, and Scrapy. I will need to extract job listing data
+and then store in in the sqlite3 database.
+
+Each website has their own structure and terms of service so I will need to be careful with that
+Having a frontend to input the filtering options would be helpful and can be done
+using the flask framework.
+
+
+
+Data Source - Indeed, Glassdoor, LinkedIn, ZipRecuruiter
+Data Storage - sqlite3 database
+Data Utilization - Once the code runs and find job postings matching the users
+parameters they will be added to the database in order of newest
+opening to oldest. And once the code runs and finds a posting I would
+like to setup email updates. 
+
+
